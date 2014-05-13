@@ -11,8 +11,8 @@ Uses the local filesystem.
 import swiftclient
 
 from docker_registry.core import driver
+from docker_registry.core import exceptions
 from docker_registry.core import lru
-from docker_registry.core.exceptions import FileNotFoundError
 
 
 class Storage(driver.Base):
@@ -50,7 +50,7 @@ class Storage(driver.Base):
                 resp_chunk_size=chunk_size)
             return obj
         except Exception:
-            raise FileNotFoundError('%s is not there' % path)
+            raise exceptions.FileNotFoundError('%s is not there' % path)
 
     @lru.set
     def put_content(self, path, content, chunk=None):
@@ -62,15 +62,14 @@ class Storage(driver.Base):
                                               chunk_size=chunk)
             return path
         except Exception:
-            raise IOError("Could not put content: {}".format(path))
+            raise IOError("Could not put content: %s" % path)
 
     def stream_read(self, path, bytes_range=None):
         try:
             for buf in self.get_content(path, self.buffer_size):
                 yield buf
         except Exception:
-            raise OSError(
-                "Could not read content from stream: {}".format(path))
+            raise exceptions.FileNotFoundError('%s is not there' % path)
 
     def stream_write(self, path, fp):
         self.put_content(path, fp, self.buffer_size)
@@ -91,7 +90,7 @@ class Storage(driver.Base):
                     inode['name'] = inode['name'][:-1]
                 yield inode['name'].replace(self._root_path[1:] + '/', '', 1)
         except Exception:
-            raise OSError("No such directory: {}".format(path))
+            raise exceptions.FileNotFoundError('%s is not there' % path)
 
     def exists(self, path):
         try:
@@ -106,10 +105,10 @@ class Storage(driver.Base):
         try:
             self._swift_connection.delete_object(self._swift_container, path)
         except Exception:
-            raise FileNotFoundError('%s is not there' % path)
+            raise exceptions.FileNotFoundError('%s is not there' % path)
 
     def get_size(self, path):
         try:
             return len(self.get_content(path))
         except Exception:
-            raise FileNotFoundError('%s is not there' % path)
+            raise exceptions.FileNotFoundError('%s is not there' % path)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Namespace dance baby
 try:
     import pkg_resources

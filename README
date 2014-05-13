@@ -1,8 +1,8 @@
 Docker registry swift driver
 
 
-## BEWARE
+## CAVEATS
 
-python-swiftclient can't be installed in tox using --egg.
+python-swiftclient can't be installed in tox using --egg (likely due to an openstack install system snafoo).
 
-You HAVE to install it globally to run the tox tests.
+Thus you HAVE to install swift-client globally BEFORE runnning the tox tests.

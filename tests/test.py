@@ -3,7 +3,6 @@
 from docker_registry.testing import Driver
 from docker_registry.testing import Query
 from docker_registry.testing.utils import Config
-import docker_registry.drivers.swift as driverspace
 
 from .mocker import Connection   # noqa
 
@@ -11,7 +10,6 @@ from .mocker import Connection   # noqa
 class TestQuery(Query):
     def __init__(self):
         self.scheme = 'swift'
-        self.cls = driverspace
 
 
 class TestDriver(Driver):
@@ -19,7 +17,6 @@ class TestDriver(Driver):
         self.scheme = 'swift'
         self.path = ''
         self.config = Config({'swift_container': 'testcontainer'})
-        # self.path = 'tmp/storagetest'
 
     def setUp(self):
         super(TestDriver, self).setUp()

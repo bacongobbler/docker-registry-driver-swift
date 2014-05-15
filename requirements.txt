@@ -1,0 +1,2 @@
+python-swiftclient>=2.0
+docker-registry-core>=1,<2

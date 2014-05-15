@@ -7,10 +7,12 @@ python:
   # - "3.3"
   # - "3.4"
 
-before_install:
-  - pip install "python-swiftclient>=2.0"
+# before_install:
+#   - pip install "python-swiftclient>=2.0"
 
 install:
-  - pip install -M tox
+  - pip install -rrequirements.txt
+  - pip install -rtests/requirements.txt
+  - pip install .
 
-script: tox
+script: nosetests -w tests --with-coverage --cover-min-percentage=80 --cover-inclusive --cover-package=docker_registry.drivers.swift --cover-erase --cover-html --cover-html-dir=reports

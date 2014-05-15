@@ -1,0 +1,13 @@
+language: python
+# Only python 27 is working for now
+python:
+  # - "2.6"
+  - "2.7"
+  # - "3.2"
+  # - "3.3"
+  # - "3.4"
+
+install:
+  - pip install -M tox
+
+script: tox

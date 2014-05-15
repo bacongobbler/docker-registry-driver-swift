@@ -3,23 +3,21 @@
 docker_registry.drivers.swift
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Uses the local filesystem.
-
 """
 
-
-import swiftclient
 
 from docker_registry.core import driver
 from docker_registry.core import exceptions
 from docker_registry.core import lru
+
+import swiftclient
 
 
 class Storage(driver.Base):
 
     def __init__(self, path=None, config=None):
         self._swift_connection = self._create_swift_connection(config)
-        self._swift_container = config.swift_container
+        self._swift_container = config.get('swift_container', 'dev_container')
         self._root_path = config.get('storage_path', '/')
 
     def _create_swift_connection(self, config):

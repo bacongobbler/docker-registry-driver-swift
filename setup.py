@@ -7,14 +7,14 @@ except ImportError:
     import distutils.core as setuptools
 
 
-__author__ = 'Docker'
-__copyright__ = 'Copyright 2014 Docker'
+__author__ = 'Mangled Deutz'
+__copyright__ = 'Copyright 2014'
 __credits__ = []
 
 __license__ = 'Apache 2.0'
 __version__ = '0.0.1'
-__maintainer__ = 'Docker'
-__email__ = 'dev@docker.com'
+__maintainer__ = 'Mangled Deutz'
+__email__ = 'olivier@webitup.fr'
 __status__ = 'Production'
 
 __title__ = 'docker-registry-driver-swift'
@@ -34,17 +34,16 @@ setuptools.setup(
     url=__url__,
     description=__description__,
     download_url=d,
-    long_description=open('./README').read(),
+    long_description=open('./README.md').read(),
     classifiers=['Development Status :: 4 - Beta',
                  'Intended Audience :: Developers',
                  'Programming Language :: Python',
-                 'Programming Language :: Python :: 2.6',
+                 # 'Programming Language :: Python :: 2.6',
                  'Programming Language :: Python :: 2.7',
-                 'Programming Language :: Python :: 3.2',
-                 'Programming Language :: Python :: 3.3',
-                 'Programming Language :: Python :: 3.4',
+                 # 'Programming Language :: Python :: 3.2',
+                 # 'Programming Language :: Python :: 3.3',
+                 # 'Programming Language :: Python :: 3.4',
                  'Programming Language :: Python :: Implementation :: CPython',
-                 'Programming Language :: Python :: Implementation :: PyPy',
                  'Operating System :: OS Independent',
                  'Topic :: Utilities',
                  'License :: OSI Approved :: Apache Software License'],

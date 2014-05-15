@@ -11,7 +11,7 @@
                 "dist",
                 "build",
                 "tmp",
-                "reports"
+                "tests/reports"
             ],
             "file_exclude_patterns":
             [

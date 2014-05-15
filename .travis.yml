@@ -1,18 +1,15 @@
 language: python
 # Only python 27 is working for now
 python:
-  # - "2.6"
+  - "2.6"
   - "2.7"
-  # - "3.2"
-  # - "3.3"
-  # - "3.4"
-
-# before_install:
-#   - pip install "python-swiftclient>=2.0"
+  - "3.2"
+  - "3.3"
+  - "3.4"
 
 install:
   - pip install -rrequirements.txt
   - pip install -rtests/requirements.txt
   - pip install .
 
-script: nosetests -w tests --with-coverage --cover-min-percentage=80 --cover-inclusive --cover-package=docker_registry.drivers.swift --cover-erase --cover-html --cover-html-dir=reports
+script: python setup.py nosetests

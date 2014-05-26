@@ -1,15 +1,18 @@
 # Docker registry swift driver
 
-This is a [docker-registry backend driver](https://github.com/dotcloud/docker-registry/tree/master/depends/docker-registry-core) based on the [Swift](https://swiftstack.com/) storage.
+This is a [docker-registry backend driver][registry-core] for
+[Openstack Swift](http://docs.openstack.org/developer/swift/).
 
 [![PyPI version][pypi-image]][pypi-url]
 [![Build Status][travis-image]][travis-url]
 
 ## Usage
 
-Assuming you have a working docker-registry and swift setup.
+Assuming you have a working docker-registry and swift setup:
 
-`pip install docker-registry-driver-swift`
+```
+pip install docker-registry-driver-swift
+```
 
 Then edit your docker-registry configuration so that `storage` reads `swift`.
 
@@ -38,16 +41,13 @@ $ pip install -r requirements.txt
 $ pip install -r test/requirements.txt
 ```
 
-In order to verify what you did is ok, just run `make test`.
+In order to verify what you did is ok, just run `make test`. This will run the tests
+provided by [`docker-registry-core`][registry-core].
 
-This will run the tests provided by [`docker-registry-core`](https://github.com/dotcloud/docker-registry/tree/master/depends/docker-registry-core)
-
-## License
-
-This is licensed under the Apache license.
-Most of the code here comes from docker-registry, under an Apache license as well.
+Please also follow the contributing guidelines in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 [pypi-url]: https://pypi.python.org/pypi/docker-registry-driver-swift
 [pypi-image]: https://badge.fury.io/py/docker-registry-driver-swift.svg
+[registry-core]: https://github.com/dotcloud/docker-registry/tree/master/depends/docker-registry-core
 [travis-url]: http://travis-ci.org/bacongobbler/docker-registry-driver-swift
 [travis-image]: https://secure.travis-ci.org/bacongobbler/docker-registry-driver-swift.png?branch=master

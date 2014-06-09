@@ -91,8 +91,9 @@ class Storage(driver.Base):
             raise exceptions.FileNotFoundError('%s is not there' % path)
 
     def exists(self, path):
+        path = self._init_path(path)
         try:
-            self.get_content(path)
+            self._swift_connection.head_object(self._swift_container, path)
             return True
         except Exception:
             return False
@@ -106,7 +107,11 @@ class Storage(driver.Base):
             raise exceptions.FileNotFoundError('%s is not there' % path)
 
     def get_size(self, path):
+        path = self._init_path(path)
         try:
-            return len(self.get_content(path))
+            headers = self._swift_connection.head_object(
+                self._swift_container,
+                path)
+            return int(headers['content-length'])
         except Exception:
             raise exceptions.FileNotFoundError('%s is not there' % path)

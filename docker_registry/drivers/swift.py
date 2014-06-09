@@ -38,6 +38,14 @@ class Storage(driver.Base):
             path = path[1:]
         return path
 
+    def content_redirect_url(self, path):
+        path = self._init_path(path)
+        return '/'.join([
+            self._swift_connection.url,
+            self._swift_container,
+            path
+        ])
+
     @lru.get
     def get_content(self, path, chunk_size=None):
         path = self._init_path(path)

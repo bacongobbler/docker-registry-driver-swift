@@ -37,6 +37,14 @@ class Connection(swiftclient.client.Connection):
                 lst.append({'name': key})
         return None, lst
 
+    ''' attempt to retrieve metadata about an object within a container '''
+    def head_object(self, container, obj):
+        try:
+            obj = self._swift_containers[container][obj]
+            return {'content-length': len(obj)}
+        except KeyError:
+            raise IOError("Could not head content")
+
     ''' attempt to retrieve an object within a container '''
     def get_object(self, container, obj, resp_chunk_size=None,
                    query_string=None, response_dict=None, headers=None):

@@ -32,3 +32,28 @@ class TestDriver(testing.Driver):
     # swiftclient doesn't raise if what we remove doesn't exist, which is bad!
     def test_remove_inexistent(self):
         pass
+
+    def test_list_directory(self):
+        # Test with root directory
+        super(TestDriver, self).test_list_directory()
+        self.tearDown()
+
+        # Test with custom root directory
+        self._storage.__init__(config={'storage_path': '/foo'})
+        self.setUp()
+        super(TestDriver, self).test_list_directory()
+
+    def test_swift_root_path_default(self):
+        assert self._storage._root_path == '/'
+        assert self._storage._init_path() == ''
+        assert self._storage._init_path('foo') == 'foo'
+
+    def test_swift_root_path_empty(self):
+        self._storage.__init__(config={'storage_path': ''})
+        assert self._storage._init_path() == ''
+        assert self._storage._init_path('foo') == 'foo'
+
+    def test_swift_root_path_custom(self):
+        self._storage.__init__(config={'storage_path': '/foo'})
+        assert self._storage._init_path() == 'foo'
+        assert self._storage._init_path('foo') == 'foo/foo'

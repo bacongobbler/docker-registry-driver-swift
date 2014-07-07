@@ -19,6 +19,8 @@ class Storage(driver.Base):
         self._swift_connection = self._create_swift_connection(config)
         self._swift_container = config.get('swift_container', 'dev_container')
         self._root_path = config.get('storage_path', '/')
+        if not self._root_path.endswith('/'):
+            self._root_path += '/'
 
     def _create_swift_connection(self, config):
         return swiftclient.client.Connection(
@@ -33,10 +35,13 @@ class Storage(driver.Base):
             })
 
     def _init_path(self, path=None):
-        path = self._root_path + '/' + path if path else self._root_path
+        path = self._root_path + path if path else self._root_path
         # Openstack does not like paths starting with '/'
-        if path and path.startswith('/'):
-            path = path[1:]
+        if path:
+            if path.startswith('/'):
+                path = path[1:]
+            if path.endswith('/'):
+                path = path[:-1]
         return path
 
     def content_redirect_url(self, path):
@@ -95,7 +100,10 @@ class Storage(driver.Base):
                 # trim extra trailing slashes
                 if inode['name'].endswith('/'):
                     inode['name'] = inode['name'][:-1]
-                yield inode['name'].replace(self._root_path[1:] + '/', '', 1)
+                if self._root_path != '/':
+                    inode['name'] = inode['name'].replace(
+                        self._init_path(), '', 1)
+                yield inode['name']
         except Exception:
             raise exceptions.FileNotFoundError('%s is not there' % path)
 

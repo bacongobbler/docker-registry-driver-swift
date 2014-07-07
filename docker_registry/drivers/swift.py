@@ -28,7 +28,8 @@ class Storage(driver.Base):
             auth_version=config.get('swift_auth_version', 2),
             os_options={
                 'tenant_name': config.get('swift_tenant_name'),
-                'region_name': config.get('swift_region_name')
+                'region_name': config.get('swift_region_name'),
+                'object_storage_url': config.get('swift_object_storage_url')
             })
 
     def _init_path(self, path=None):
@@ -37,6 +38,14 @@ class Storage(driver.Base):
         if path and path.startswith('/'):
             path = path[1:]
         return path
+
+    def content_redirect_url(self, path):
+        path = self._init_path(path)
+        return '/'.join([
+            self._swift_connection.url,
+            self._swift_container,
+            path
+        ])
 
     @lru.get
     def get_content(self, path, chunk_size=None):
@@ -91,8 +100,9 @@ class Storage(driver.Base):
             raise exceptions.FileNotFoundError('%s is not there' % path)
 
     def exists(self, path):
+        path = self._init_path(path)
         try:
-            self.get_content(path)
+            self._swift_connection.head_object(self._swift_container, path)
             return True
         except Exception:
             return False
@@ -106,7 +116,11 @@ class Storage(driver.Base):
             raise exceptions.FileNotFoundError('%s is not there' % path)
 
     def get_size(self, path):
+        path = self._init_path(path)
         try:
-            return len(self.get_content(path))
+            headers = self._swift_connection.head_object(
+                self._swift_container,
+                path)
+            return int(headers['content-length'])
         except Exception:
             raise exceptions.FileNotFoundError('%s is not there' % path)

@@ -102,7 +102,7 @@ class Storage(driver.Base):
                     inode['name'] = inode['name'][:-1]
                 if self._root_path != '/':
                     inode['name'] = inode['name'].replace(
-                        self._init_path(), '', 1)
+                        self._init_path() + '/', '', 1)
                 yield inode['name']
         except Exception:
             raise exceptions.FileNotFoundError('%s is not there' % path)

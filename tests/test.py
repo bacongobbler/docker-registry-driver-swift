@@ -39,7 +39,7 @@ class TestDriver(testing.Driver):
         self.tearDown()
 
         # Test with custom root directory
-        self._storage.__init__(config={'storage_path': '/foo'})
+        self.config = testing.Config({'storage_path': '/foo'})
         self.setUp()
         super(TestDriver, self).test_list_directory()
 

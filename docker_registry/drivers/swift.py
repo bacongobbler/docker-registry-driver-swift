@@ -53,8 +53,11 @@ class Storage(driver.Base):
         ])
 
     @lru.get
-    def get_content(self, path, chunk_size=None):
+    def get_content(self, path):
         path = self._init_path(path)
+        return self.get_store(path)
+
+    def get_store(self, path, chunk_size=None):
         try:
             _, obj = self._swift_connection.get_object(
                 self._swift_container,
@@ -65,26 +68,32 @@ class Storage(driver.Base):
             raise exceptions.FileNotFoundError('%s is not there' % path)
 
     @lru.set
-    def put_content(self, path, content, chunk=None):
+    def put_content(self, path, content):
         path = self._init_path(path)
+        self.put_store(path, content)
+        return path
+
+    def put_store(self, path, content, chunk=None):
         try:
             self._swift_connection.put_object(self._swift_container,
                                               path,
                                               content,
                                               chunk_size=chunk)
-            return path
         except Exception:
             raise IOError("Could not put content: %s" % path)
 
     def stream_read(self, path, bytes_range=None):
-        try:
-            for buf in self.get_content(path, self.buffer_size):
-                yield buf
-        except Exception:
-            raise exceptions.FileNotFoundError('%s is not there' % path)
+        path = self._init_path(path)
+        for buf in self.get_store(path, self.buffer_size):
+            yield buf
 
     def stream_write(self, path, fp):
-        self.put_content(path, fp, self.buffer_size)
+        path = self._init_path(path)
+        self.put_store(path, fp, self.buffer_size)
+
+    def head_store(self, path):
+        obj = self._swift_connection.head_object(self._swift_container, path)
+        return obj
 
     def list_directory(self, path=None):
         try:
@@ -110,7 +119,7 @@ class Storage(driver.Base):
     def exists(self, path):
         path = self._init_path(path)
         try:
-            self._swift_connection.head_object(self._swift_container, path)
+            self.head_store(path)
             return True
         except Exception:
             return False
@@ -126,9 +135,7 @@ class Storage(driver.Base):
     def get_size(self, path):
         path = self._init_path(path)
         try:
-            headers = self._swift_connection.head_object(
-                self._swift_container,
-                path)
-            return int(headers['content-length'])
+            headers = self.head_store(path)
+            return headers['content-length']
         except Exception:
             raise exceptions.FileNotFoundError('%s is not there' % path)

@@ -1,16 +1,8 @@
-# -*- coding: utf-8 -*-
-"""
-docker_registry.drivers.swift
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-"""
-
+import swiftclient
 
 from docker_registry.core import driver
 from docker_registry.core import exceptions
 from docker_registry.core import lru
-
-import swiftclient
 
 
 class Storage(driver.Base):

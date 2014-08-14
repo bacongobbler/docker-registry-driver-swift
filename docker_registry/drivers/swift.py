@@ -9,21 +9,22 @@ class Storage(driver.Base):
 
     def __init__(self, path=None, config=None):
         self._swift_connection = self._create_swift_connection(config)
-        self._swift_container = config.get('swift_container', 'dev_container')
-        self._root_path = config.get('storage_path', '/')
+        self._swift_container = config.swift_container or 'dev_container'
+        self._root_path = config.storage_path or '/'
         if not self._root_path.endswith('/'):
             self._root_path += '/'
 
     def _create_swift_connection(self, config):
+        swift_auth_version = config.swift_auth_version or 2
         return swiftclient.client.Connection(
-            authurl=config.get('swift_authurl'),
-            user=config.get('swift_user'),
-            key=config.get('swift_password'),
-            auth_version=config.get('swift_auth_version', 2),
+            authurl=config.swift_authurl,
+            user=config.swift_user,
+            key=config.swift_password,
+            auth_version=swift_auth_version,
             os_options={
-                'tenant_name': config.get('swift_tenant_name'),
-                'region_name': config.get('swift_region_name'),
-                'object_storage_url': config.get('swift_object_storage_url')
+                'tenant_name': config.swift_tenant_name,
+                'region_name': config.swift_region_name,
+                'object_storage_url': config.swift_object_storage_url
             })
 
     def _init_path(self, path=None):

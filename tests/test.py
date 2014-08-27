@@ -49,11 +49,13 @@ class TestDriver(testing.Driver):
         assert self._storage._init_path('foo') == 'foo'
 
     def test_swift_root_path_empty(self):
-        self._storage.__init__(config={'storage_path': ''})
+        config = testing.Config({'storage_path': ''})
+        self._storage.__init__(config=config)
         assert self._storage._init_path() == ''
         assert self._storage._init_path('foo') == 'foo'
 
     def test_swift_root_path_custom(self):
-        self._storage.__init__(config={'storage_path': '/foo'})
+        config = testing.Config({'storage_path': '/foo'})
+        self._storage.__init__(config=config)
         assert self._storage._init_path() == 'foo'
         assert self._storage._init_path('foo') == 'foo/foo'

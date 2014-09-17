@@ -32,6 +32,11 @@ class Connection(swiftclient.client.Connection):
                       delimiter=None, end_marker=None, path=None,
                       full_listing=False):
         lst = []
+        if path is None:
+            if prefix[-1] != '/':
+                path = prefix + '/'
+            else:
+                path = prefix
         for key, value in self._swift_containers[container].iteritems():
             if key.startswith(path):
                 lst.append({'name': key})

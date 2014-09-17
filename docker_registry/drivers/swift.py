@@ -37,6 +37,15 @@ class Storage(driver.Base):
                 path = path[:-1]
         return path
 
+    def _clean_up_name(self, name):
+        if self._root_path != '/':
+            name = name.replace(
+                self._init_path() + '/', '', 1)
+        # trim extra trailing slashes
+        if name.endswith('/'):
+            name = name[:-1]
+        return name
+
     def content_redirect_url(self, path):
         path = self._init_path(path)
         return '/'.join([
@@ -95,17 +104,19 @@ class Storage(driver.Base):
                 path += '/'
             _, directory = self._swift_connection.get_container(
                 container=self._swift_container,
-                path=path)
+                prefix=path, delimiter='/')
             if not directory:
                 raise
+            param = ''
             for inode in directory:
+                if 'name' in inode:
+                    param = 'name'
+                elif 'subdir' in inode:
+                    param = 'subdir'
+                else:
+                    raise
                 # trim extra trailing slashes
-                if inode['name'].endswith('/'):
-                    inode['name'] = inode['name'][:-1]
-                if self._root_path != '/':
-                    inode['name'] = inode['name'].replace(
-                        self._init_path() + '/', '', 1)
-                yield inode['name']
+                yield self._clean_up_name(inode[param])
         except Exception:
             raise exceptions.FileNotFoundError('%s is not there' % path)
 

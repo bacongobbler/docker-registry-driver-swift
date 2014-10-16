@@ -3,6 +3,7 @@
 '''Monkeypatch Openstack Swift Client for testing'''
 
 import swiftclient
+import re
 
 from docker_registry.testing.utils import monkeypatch_class
 
@@ -28,18 +29,42 @@ class Connection(swiftclient.client.Connection):
         self._swift_containers.pop(container, None)
 
     ''' Get a listing of objects for the container. '''
+    # The behaviour of the swift listdir client is very subtle.  Given
+    # the prefix, delimiter and path combo, a lot of different type of
+    # listing is possible.  Try to mimic this behaviour as close as
+    # possible.
     def get_container(self, container, marker=None, limit=None, prefix=None,
                       delimiter=None, end_marker=None, path=None,
                       full_listing=False):
         lst = []
-        if path is None:
-            if prefix[-1] != '/':
-                path = prefix + '/'
-            else:
-                path = prefix
+        search = path
+        if search is None:
+            search = prefix
+        # The case which are not handled at all here is when the
+        # prefix does not end with a slash (which is equivalent to ls
+        # -d).  The list_directory function ensure that is not the
+        # case, so there is no need.
         for key, value in self._swift_containers[container].iteritems():
-            if key.startswith(path):
-                lst.append({'name': key})
+            # works only for two level deep path.  Enough to test.
+            if delimiter is None and prefix is not None:
+                # This output all the files matching the prefix,
+                # regardless of how deep they are.
+                path_re = re.compile("(%s/?)(.+)?$" % search)
+            else:
+                # this split the a two level path
+                path_re = re.compile("(%s/?)([^/]+)(/.*)?$" % search)
+            match = path_re.match(key)
+            if match is not None:
+                if match.group(3) is not None:
+                    # we have a subdir
+                    hash_key = 'subdir'
+                    suffix = '/'
+                else:
+                    # we have a file
+                    hash_key = 'name'
+                    suffix = ''
+                found_file = match.group(1) + match.group(2) + suffix
+                lst.append({hash_key: found_file})
         return None, lst
 
     ''' attempt to retrieve metadata about an object within a container '''

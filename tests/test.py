@@ -43,6 +43,16 @@ class TestDriver(testing.Driver):
         self.setUp()
         super(TestDriver, self).test_list_directory()
 
+    def test_list_directory_with_subdir(self):
+        # Test with root directory
+        super(TestDriver, self).test_list_directory_with_subdir()
+        self.tearDown()
+
+        # Test with custom root directory
+        self.config = testing.Config({'storage_path': '/foo'})
+        self.setUp()
+        super(TestDriver, self).test_list_directory_with_subdir()
+
     def test_swift_root_path_default(self):
         assert self._storage._root_path == '/'
         assert self._storage._init_path() == ''

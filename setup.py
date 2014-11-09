@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2014'
 __credits__ = []
 
 __license__ = 'Apache 2.0'
-__version__ = '0.2.0+git'
+__version__ = '0.2.1'
 __maintainer__ = 'Matthew Fisher'
 __email__ = 'matthewf@opdemand.com'
 __status__ = 'Production'

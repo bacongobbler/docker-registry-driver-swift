@@ -25,6 +25,7 @@ You may add any of the following to your main docker-registry configuration to f
 storage: swift
 storage_path: /registry
 swift_authurl: _env:OS_AUTH_URL
+swift_cacert: _env:OS_CACERT
 swift_container: _env:OS_CONTAINER
 swift_user: _env:OS_USERNAME
 swift_password: _env:OS_PASSWORD

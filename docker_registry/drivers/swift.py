@@ -18,6 +18,7 @@ class Storage(driver.Base):
         swift_auth_version = config.swift_auth_version or 2
         return swiftclient.client.Connection(
             authurl=config.swift_authurl,
+            cacert=config.swift_cacert,
             user=config.swift_user,
             key=config.swift_password,
             auth_version=swift_auth_version,
